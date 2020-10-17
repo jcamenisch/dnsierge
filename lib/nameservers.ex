@@ -1,5 +1,11 @@
 defmodule Nameservers do
+  use Agent
+
   @root_servers Enum.map(?a..?m, fn c -> "#{<<c::utf8>>}.root-servers.net" end)
+
+  def start_link(_) do
+    Agent.start_link(fn -> %{} end, name: __MODULE__)
+  end
 
   def from_dig(type, domain, server) do
     type = String.upcase(type)
@@ -28,12 +34,20 @@ defmodule Nameservers do
     @root_servers
   end
 
-  def get_for_segments([subdomain | tail]) do
-    server = Enum.random(get_for_segments(tail))
+  def get_for_segments(segments) do
+    cached_value = Agent.get(__MODULE__, &Map.get(&1, segments))
 
-    [&from_ns/2, &from_soa/2, &from_whois/2]
-    |> Stream.map(fn f -> f.("#{subdomain}.#{Enum.join(tail, ".")}", server) end)
-    |> Enum.find([], fn l -> !Enum.empty?(l) end)
+    if cached_value do
+      cached_value
+    else
+      server = Enum.random(get_for_segments(tl(segments)))
+      result = [&from_ns/2, &from_soa/2, &from_whois/2]
+               |> Stream.map(fn f -> f.("#{Enum.join(segments, ".")}", server) end)
+               |> Enum.find([], fn l -> !Enum.empty?(l) end)
+      Agent.update(__MODULE__, &(Map.put(&1, segments, result)))
+
+      result
+    end
   end
 
   def get(fqdn) do

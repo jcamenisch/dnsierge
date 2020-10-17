@@ -14,9 +14,10 @@ defmodule Dnsierge.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Dnsierge.PubSub},
       # Start the Endpoint (http/https)
-      DnsiergeWeb.Endpoint
+      DnsiergeWeb.Endpoint,
       # Start a worker by calling: Dnsierge.Worker.start_link(arg)
       # {Dnsierge.Worker, arg}
+      Nameservers
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

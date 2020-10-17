@@ -1,0 +1,15 @@
+<section class="row">
+  <form method="GET">
+    <input name="domain" placeholder="<%= gettext "fully qualified domain" %>" value="<%= @domain %>" />
+  </form>
+</section>
+<%= if @domain do %><section class="row">
+  <article>
+    <h2>Authoritative name servers</h2>
+    <ul>
+      <%= for server <- @nameservers do %>
+        <li><%= server %></li>
+      <% end %>
+    </ul>
+  </article>
+</section><% end %>

@@ -19,9 +19,8 @@
             <% end %>
           </ul>
         </nav>
-        <a href="https://phoenixframework.org/" class="phx-logo">
-          <img src="<%= Routes.static_path(@conn, "/images/phoenix.png") %>" alt="Phoenix Framework Logo"/>
-        </a>
+        <h1><a href="/">DNSierge</a></h1>
+        <p>Looking after your DNS since 2020</p>
       </section>
     </header>
     <main role="main" class="container">

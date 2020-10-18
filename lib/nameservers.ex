@@ -50,6 +50,10 @@ defmodule Nameservers do
     end
   end
 
+  def get(nil) do
+    []
+  end
+
   def get(fqdn) do
     fqdn |> String.split(".") |> get_for_segments()
   end
